@@ -51,6 +51,7 @@ void append_to_array()
     darray_append(array, &i);
     CU_ASSERT(darray_size(array) == 3);
     CU_ASSERT(darray_capacity(array) == 4);
+    darray_destroy(array);
 }
 
 
