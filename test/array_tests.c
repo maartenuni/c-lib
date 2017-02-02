@@ -54,6 +54,24 @@ void append_to_array()
     darray_destroy(array);
 }
 
+void array_get()
+{
+    DArray_t array = darray_create(sizeof(int), NULL, NULL);
+    size_t i;
+    for (i = 0; i < 1000; ++i)
+        darray_append(array, &i);
+
+    int unequal = 0;
+    for (i = 0; i < darray_size(array); ++i) {
+        int* item = darray_get(array, i);
+        if(*item != i)
+            unequal = 1;
+    }
+    CU_ASSERT(unequal == 0);
+
+    darray_destroy(array);
+}
+
 
 int add_array_suite()
 {
@@ -85,6 +103,14 @@ int add_array_suite()
     }
     
     test = CU_ADD_TEST(suite, append_to_array);
+    if (!test) {
+        fprintf(stderr,
+                "unable to create darray suite: %s\n",
+                CU_get_error_msg()
+               );
+        return CU_get_error();
+    }
+    test = CU_ADD_TEST(suite, array_get);
     if (!test) {
         fprintf(stderr,
                 "unable to create darray suite: %s\n",

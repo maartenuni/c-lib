@@ -121,8 +121,8 @@ darray_append(DArray_t array, void* item)
         if (ret)
             return ret;
     }
-    void* dest = darray_get(ar, ar->size);
-    ar->cf(dest, item, ar->size++);
+    void* dest = darray_get(ar, ar->size++);
+    ar->cf(dest, item, ar->esize);
     return 0;
 }
 
