@@ -72,6 +72,41 @@ void array_get()
     darray_destroy(array);
 }
 
+int g_free_count = 0;
+
+void array_set_free(void* item)
+{
+    g_free_count++;
+}
+
+void array_set()
+{
+    DArray_t array = darray_create(sizeof(int), array_set_free, NULL);
+    const int is_set = 5;
+    for (size_t i = 0; i < 4; ++i)
+        darray_append(array, (void*)&is_set);
+    
+    for(size_t i = 0; i < darray_size(array); ++i) {
+        int* value = darray_get(array, i);
+        CU_ASSERT(*value == is_set);
+    }
+    
+    // no items are freed.
+    CU_ASSERT(g_free_count == 0);
+
+    // for each set one the present elements must be deleted to accommodate
+    // space for the new one.
+    for(size_t i = 0; i < darray_size(array); ++i)
+        darray_set(array, i, &i);
+    CU_ASSERT(g_free_count == 4);
+    
+    for(size_t i = 0; i < darray_size(array); ++i) {
+        int* value = darray_get(array, i);
+        CU_ASSERT(*value == i);
+    }
+
+    darray_destroy(array);
+}
 
 int add_array_suite()
 {
@@ -111,6 +146,15 @@ int add_array_suite()
         return CU_get_error();
     }
     test = CU_ADD_TEST(suite, array_get);
+    if (!test) {
+        fprintf(stderr,
+                "unable to create darray suite: %s\n",
+                CU_get_error_msg()
+               );
+        return CU_get_error();
+    }
+    
+    test = CU_ADD_TEST(suite, array_set);
     if (!test) {
         fprintf(stderr,
                 "unable to create darray suite: %s\n",

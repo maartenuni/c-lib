@@ -106,6 +106,20 @@ size_t darray_capacity(const DArray_t array);
 void* darray_get(DArray_t array, size_t n);
 
 /**
+ * Set an element in the array
+ *
+ * This function sets a new item inside of the array if the array
+ * was created with a free_func specified it will be called on the item
+ * which is in the place where the new item should be inserted.
+ *
+ * @param array with a number of items greater than N
+ * @param n the location inside the array should be smaller than the size
+ *        of the array.
+ * @param item, the item to insert in the array.
+ */
+void darray_set(DArray_t array, size_t n, void* item);
+
+/**
  * Append a item to the back of the array.
  *
  * @param item[in] 
