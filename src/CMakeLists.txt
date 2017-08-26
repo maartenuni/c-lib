@@ -2,10 +2,13 @@
 
 set (CLIB_SOURCES
     darray.c
+    list.c
     )
 
 set (CLIB_HEADERS
     darray.h
+    list.h
+    priv/listpriv.h
     )
 
 add_library(${CLIB_SHARED_LIB} SHARED ${CLIB_SOURCES} ${CLIB_HEADERS})

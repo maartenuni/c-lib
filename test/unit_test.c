@@ -20,8 +20,8 @@ along with c-lib.  If not, see <http://www.gnu.org/licenses/>
 #include <stdlib.h>
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
-#include "array_tests.h"
 #include <getopt.h>
+#include "suites.h"
 
 int g_verbose = 0;
 int g_silent = 0;
@@ -33,9 +33,16 @@ const char* optstring = "sv";
  */
 int add_suites()
 {
-    int res = add_array_suite();
+    int res;
+    
+    res = add_array_suite();
     if (res)
         return res;
+    
+    res = add_list_suite();
+    if (res)
+        return res;
+
     return res;
 }
 
