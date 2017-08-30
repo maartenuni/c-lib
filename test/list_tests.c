@@ -29,6 +29,20 @@ int int_cmp_func(const void* k1, const void* k2)
     return *i2 - *i1;
 }
 
+void print_int_list(List_t list)
+{
+    ListNode* n = list_begin(list);
+    while (n) {
+        int* data = n->data;
+        if (n->next)
+            fprintf(stdout, "%d, ", *data);
+        else
+            fprintf(stdout, "%d", *data);
+        n = n->next;
+    }
+    fprintf(stdout, "\n");
+}
+
 /******************** tests for list *******************/
 
 void create_list()
@@ -36,9 +50,8 @@ void create_list()
     List_t list = list_create(sizeof(int), NULL, NULL);
     CU_ASSERT(list != 0);
     CU_ASSERT(list_size(list) == 0);
-    list_destoy(list);
+    list_destroy(list);
 }
-
 
 void prepend_list() // also tests list_find a little.
 {
@@ -63,7 +76,7 @@ void prepend_list() // also tests list_find a little.
         }
     }
 
-    list_destoy(list);
+    list_destroy(list);
 }
 
 
@@ -80,6 +93,8 @@ void equality_list()
     }
 
     CU_ASSERT(list_compare(l1, l2, int_cmp_func) == 0);
+    list_destroy(l1);
+    list_destroy(l2);
 }
 
 void reverse_list()
@@ -97,6 +112,37 @@ void reverse_list()
     CU_ASSERT(list_compare(l1, l2, int_cmp_func) != 0);
     list_reverse(l1);
     CU_ASSERT(list_compare(l1, l2, int_cmp_func) == 0);
+    list_destroy(l1);
+    list_destroy(l2);
+}
+
+void remove_list()
+{
+    List_t list = list_create(sizeof(int), NULL, NULL);
+    ListNode* n;
+    for (int i = 10; i > 0 ; i--)
+        n = list_prepend(list, &i);
+
+    //print_int_list(list);
+    CU_ASSERT(*(int*)n->data == 1);
+    list_remove(list, n);
+    n = list_begin(list);
+    CU_ASSERT(*(int*)n->data == 2);
+    //print_int_list(list);
+    CU_ASSERT(list_size(list) == 9);
+
+    int val = 3;
+    n = list_find(list, &val, int_cmp_func);
+    CU_ASSERT(n != NULL);
+    val = 9;
+    list_remove_range(list, n, list_find(list, &val, int_cmp_func));
+    //print_int_list(list);
+    CU_ASSERT(list_size(list) == 3);
+    list_remove_range(list, list_begin(list), NULL);
+    CU_ASSERT(list_size(list) == 0);
+    //print_int_list(list);
+
+    list_destroy(list);
 }
 
 int add_list_suite()
@@ -140,6 +186,16 @@ int add_list_suite()
         return CU_get_error();
     }
     test = CU_add_test(suite, "reverse", reverse_list);
+    if (!test) {
+        fprintf(stderr,
+                "unable to create list test: %s\n",
+                CU_get_error_msg()
+               );
+
+        return CU_get_error();
+    }
+    
+    test = CU_add_test(suite, "remove", remove_list);
     if (!test) {
         fprintf(stderr,
                 "unable to create list test: %s\n",

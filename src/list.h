@@ -47,7 +47,7 @@ List_t list_create(size_t element_size, list_free_func ff, list_copy_func cf);
 /**
  * Destroys the list and frees all members.
  */
-void   list_destoy(List_t list);
+void   list_destroy(List_t list);
 
 /**
  * Returns the number of instances stored in the list.
@@ -102,17 +102,39 @@ ListNode* list_insert(List_t list, ListNode* before, const void* value);
  * @param [in] after non null value of item in the list.
  * @param [in] value a value to insert into the list.
  */
-ListNode* list_insert_after(List_t list, ListNode after, const void* v);
+ListNode* list_insert_after(List_t list, ListNode* after, const void* v);
+
+/**
+ * Removes a node from the list.
+ *
+ * removes one node from the list.
+ *
+ * @param [in] list the list to append to.
+ * @param [in] node non null value of item in the list.
+ */
+void list_remove(List_t list, ListNode* node);
+
+/**
+ * Remove an node from the list.
+ *
+ * Removes nodes starting from begin until and excluding end or NULL is
+ * encountered.
+ *
+ * @param [in] list the list to append to.
+ * @param [in] node non null value of item in the list.
+ */
+void list_remove_range(List_t list, ListNode* begin, ListNode* end);
 
 /**
  * Finds a node in a list, if the node isn't found NULL is returned.
  */
 ListNode* list_find(const List_t list,
                     const void* value,
-                    list_cmp_func cmpf);
+                    list_cmp_func cmpf
+                    );
 
 /**
- * Reverses a list inplace.
+ * Reverses a list in place.
  */
 void list_reverse(List_t list);
 

@@ -36,6 +36,9 @@ struct ListClass {
         (struct List* self, ListNode* before, const void* value);
     ListNode* (*insert_after)
         (struct List* self, ListNode* after, const void* value);
+    void (*remove) (struct List* self, ListNode* node);
+    void (*remove_range)
+        (struct List* self, ListNode* begin, ListNode* end);
     ListNode* (*find)(struct List* self, const void* value, list_cmp_func cmp);
     ListNode* (*begin)(const struct List* self);
     void (*reverse)(struct List* self);
@@ -62,18 +65,12 @@ list_node_create(struct List* self, const void* value)
     }
 }
 
-static ListNode* 
-list_node_reverse(ListNode* node)
+static void 
+list_node_destroy(struct List* self, ListNode* node)
 {
-    if (!node || node->next == NULL)
-        return node; 
-
-    ListNode* n = list_node_reverse(node->next);
-    assert(n);
-    n->next = node;
-    return n;
+    self->ff(node->data);
+    free(node);
 }
-
 
 struct ListClass list_class;
 
@@ -165,7 +162,7 @@ _list_insert(struct List* self, ListNode* before, const void* value)
     head = self->head;
     while(head && head->next != before)
         head = head->next;
-    
+
     if (head)
         head->next = newnode;
     else
@@ -177,6 +174,8 @@ _list_insert(struct List* self, ListNode* before, const void* value)
 static ListNode*
 _list_insert_after(struct List* self, ListNode* after, const void* value)
 {
+    assert(after != NULL);
+    assert(value);
     ListNode *newnode = list_node_create(self, value);
     if (!newnode)
         return NULL;
@@ -184,7 +183,34 @@ _list_insert_after(struct List* self, ListNode* after, const void* value)
     newnode->next = after->next;
     after->next = newnode;
     self->nelements++;
+
     return newnode;
+}
+
+static void 
+_list_remove(struct List* self, ListNode* node)
+{
+    self->klass->remove_range(self, node, node->next);
+}
+
+static void
+_list_remove_range(struct List* self, ListNode* begin, ListNode* end)
+{
+    size_t n_rm =  0;
+    ListNode **b, *e;
+    b = &self->head;
+    while((*b) != begin)
+        b = &(*b)->next;
+
+    e = *b;
+    while(e != end) {
+        ListNode* rm = e;
+        e = e->next;
+        list_node_destroy(self, rm);
+        n_rm++;
+    }
+    *b = e;
+    self->nelements -= n_rm;
 }
 
 static ListNode*
@@ -243,6 +269,8 @@ struct ListClass list_class = {
     _list_append,
     _list_insert,
     _list_insert_after,
+    _list_remove,
+    _list_remove_range,
     _list_find,
     _list_begin,
     _list_reverse,
@@ -260,7 +288,7 @@ List_t list_create(size_t element_sz, list_free_func ff, list_copy_func cf)
     return self;
 }
 
-void list_destoy(List_t self)
+void list_destroy(List_t self)
 {
     struct List* this = self;
     struct ListClass* klass = this->klass;
@@ -298,6 +326,28 @@ ListNode* list_insert(List_t self, ListNode* before, const void* value)
     ListClass* klass = this->klass;
 
     return klass->insert(self, before, value);
+}
+
+ListNode* list_insert_after(List_t self, ListNode* after, const void* value)
+{
+    struct List* this = (struct List*) self;
+    ListClass* klass = this->klass;
+
+    return klass->insert_after(self, after, value);
+}
+
+void list_remove(List_t self, ListNode* node) {
+    struct List* this = (struct List*) self;
+    ListClass* klass = this->klass;
+
+    klass->remove(self, node);
+}
+
+void list_remove_range(List_t self, ListNode* begin, ListNode* end) {
+    struct List* this = (struct List*) self;
+    ListClass* klass = this->klass;
+
+    klass->remove_range(self, begin, end);
 }
 
 ListNode* list_find(List_t self, const void* value, list_cmp_func cmp)
