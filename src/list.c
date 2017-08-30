@@ -288,7 +288,7 @@ List_t list_create(size_t element_sz, list_free_func ff, list_copy_func cf)
     return self;
 }
 
-void list_destoy(List_t self)
+void list_destroy(List_t self)
 {
     struct List* this = self;
     struct ListClass* klass = this->klass;

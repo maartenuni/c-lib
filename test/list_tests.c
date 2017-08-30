@@ -50,7 +50,7 @@ void create_list()
     List_t list = list_create(sizeof(int), NULL, NULL);
     CU_ASSERT(list != 0);
     CU_ASSERT(list_size(list) == 0);
-    list_destoy(list);
+    list_destroy(list);
 }
 
 void prepend_list() // also tests list_find a little.
@@ -76,7 +76,7 @@ void prepend_list() // also tests list_find a little.
         }
     }
 
-    list_destoy(list);
+    list_destroy(list);
 }
 
 
@@ -93,8 +93,8 @@ void equality_list()
     }
 
     CU_ASSERT(list_compare(l1, l2, int_cmp_func) == 0);
-    list_destoy(l1);
-    list_destoy(l2);
+    list_destroy(l1);
+    list_destroy(l2);
 }
 
 void reverse_list()
@@ -112,8 +112,8 @@ void reverse_list()
     CU_ASSERT(list_compare(l1, l2, int_cmp_func) != 0);
     list_reverse(l1);
     CU_ASSERT(list_compare(l1, l2, int_cmp_func) == 0);
-    list_destoy(l1);
-    list_destoy(l2);
+    list_destroy(l1);
+    list_destroy(l2);
 }
 
 void remove_list()
@@ -142,7 +142,7 @@ void remove_list()
     CU_ASSERT(list_size(list) == 0);
     //print_int_list(list);
 
-    list_destoy(list);
+    list_destroy(list);
 }
 
 int add_list_suite()

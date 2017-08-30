@@ -47,7 +47,7 @@ List_t list_create(size_t element_size, list_free_func ff, list_copy_func cf);
 /**
  * Destroys the list and frees all members.
  */
-void   list_destoy(List_t list);
+void   list_destroy(List_t list);
 
 /**
  * Returns the number of instances stored in the list.
