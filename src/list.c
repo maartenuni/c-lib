@@ -197,19 +197,19 @@ static void
 _list_remove_range(struct List* self, ListNode* begin, ListNode* end)
 {
     size_t n_rm =  0;
-    ListNode **b, **e;
+    ListNode **b, *e;
     b = &self->head;
     while((*b) != begin)
         b = &(*b)->next;
 
-    e = b;
-    while((*e) != end) {
-        ListNode* rm = *e;
-        e = &((*e)->next);
+    e = *b;
+    while(e != end) {
+        ListNode* rm = e;
+        e = e->next;
         list_node_destroy(self, rm);
         n_rm++;
     }
-    *b = *e;
+    *b = e;
     self->nelements -= n_rm;
 }
 

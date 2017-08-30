@@ -93,6 +93,8 @@ void equality_list()
     }
 
     CU_ASSERT(list_compare(l1, l2, int_cmp_func) == 0);
+    list_destoy(l1);
+    list_destoy(l2);
 }
 
 void reverse_list()
@@ -110,6 +112,8 @@ void reverse_list()
     CU_ASSERT(list_compare(l1, l2, int_cmp_func) != 0);
     list_reverse(l1);
     CU_ASSERT(list_compare(l1, l2, int_cmp_func) == 0);
+    list_destoy(l1);
+    list_destoy(l2);
 }
 
 void remove_list()
@@ -119,12 +123,26 @@ void remove_list()
     for (int i = 10; i > 0 ; i--)
         n = list_prepend(list, &i);
 
-    print_int_list(list);
+    //print_int_list(list);
     CU_ASSERT(*(int*)n->data == 1);
     list_remove(list, n);
     n = list_begin(list);
     CU_ASSERT(*(int*)n->data == 2);
+    //print_int_list(list);
+    CU_ASSERT(list_size(list) == 9);
 
+    int val = 3;
+    n = list_find(list, &val, int_cmp_func);
+    CU_ASSERT(n != NULL);
+    val = 9;
+    list_remove_range(list, n, list_find(list, &val, int_cmp_func));
+    //print_int_list(list);
+    CU_ASSERT(list_size(list) == 3);
+    list_remove_range(list, list_begin(list), NULL);
+    CU_ASSERT(list_size(list) == 0);
+    //print_int_list(list);
+
+    list_destoy(list);
 }
 
 int add_list_suite()
