@@ -20,6 +20,8 @@
 #ifndef LIST_H
 #define LIST_H
 
+#include <stdlib.h>
+
 typedef void* List_t;
 
 typedef struct ListNode {
