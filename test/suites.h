@@ -23,3 +23,4 @@
  */
 int add_array_suite();
 int add_list_suite();
+int add_stack_suite();

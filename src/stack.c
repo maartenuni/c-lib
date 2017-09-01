@@ -32,6 +32,8 @@ struct StackClass {
     int   (*push)(struct Stack*, const void* element);
 };
 
+typedef struct StackClass StackClass;
+
 static void
 _stack_construct(struct Stack* self,
                  size_t element_size,
@@ -39,38 +41,43 @@ _stack_construct(struct Stack* self,
                  clib_copy_func cf
                  )
 {
-    assert(0==1);
+    self->list = list_create(element_size, ff, cf);
 }
 
 static void
 _stack_destruct(struct Stack* self)
 {
-    assert(0==1);
+    list_destroy(self->list);
+    free(self);
 }
 
 static size_t
 _stack_size(const struct Stack* self)
 {
-    assert(0==1);
+    return list_size(self->list);
 }
 
 
 static void
 _stack_pop(struct Stack* self)
 {
-    assert(0==1);
+    list_remove(self->list, list_begin(self->list));
 }
 
 static void*
 _stack_head(Stack* self)
 {
-    assert(0==1);
+    ListNode* node = list_begin(self->list);
+    return node->data;
 }
 
 static int 
 _stack_push(Stack* self, const void* element)
 {
-    assert(0==1);
+    if (list_prepend(self->list, element) != NULL)
+        return STACK_OK;
+    else
+        return STACK_OUT_OF_MEM;
 }
 
 struct StackClass stack_class = {
@@ -86,37 +93,62 @@ struct StackClass stack_class = {
 Stack_t
 stack_create(size_t element_size, clib_free_func ff, clib_copy_func cf)
 {
-    assert(0 == 1);
+    Stack* self = malloc(stack_class.element_sz);
+    if (!self)
+        return NULL;
+
+    self->klass = &stack_class;
+    self->klass->construct(self, element_size, ff, cf);
+    if (!self->list) {
+        stack_destroy(self);
+        return NULL;
+    }
+    return self;
 }
 
 void
 stack_destroy(Stack_t stack)
 {
-    assert(0 == 1);
+    Stack* self = stack;
+    StackClass* klass = self->klass;
+    
+    klass->destruct(self);
 }
 
 size_t
 stack_size(Stack_t stack)
 {
-    assert(0 == 1);
+    Stack* self = stack;
+    StackClass* klass = self->klass;
+
+    return klass->size(self);
 }
 
 void
 stack_pop(Stack_t stack)
 {
-    assert(0 == 1);
+    Stack* self = stack;
+    StackClass* klass = self->klass;
+
+    klass->pop(self);
 }
 
 void*
 stack_head(Stack_t stack)
 {
-    assert(0 ==1);
+    Stack* self = stack;
+    StackClass* klass = self->klass;
+
+    return klass->head(self);    
 }
 
 int
 stack_push(Stack_t stack, const void* element)
 {
-    assert(0 == 1);
+    Stack* self = stack;
+    StackClass* klass = self->klass;
+    
+    return klass->push(self, element);
 }
 
 

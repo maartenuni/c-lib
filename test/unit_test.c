@@ -43,6 +43,10 @@ int add_suites()
     if (res)
         return res;
 
+    res = add_stack_suite();
+    if (res)
+        return res;
+
     return res;
 }
 

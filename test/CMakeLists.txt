@@ -13,6 +13,7 @@ if(BUILD_UNIT_TEST)
             unit_test.c
             array_tests.c
             list_tests.c
+            stack_test.c
         )
 
     set(UNIT_TEST_HEADERS 

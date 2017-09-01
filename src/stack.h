@@ -20,15 +20,18 @@
 #ifndef STACK_H
 #define STACK_H
 
+#include "function-types.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "function-types.h"
-
 typedef void* Stack_t;
 
-
+enum StackResult {
+    STACK_OK = 0,
+    STACK_OUT_OF_MEM
+};
 
 /**
  * create an empty stack.
