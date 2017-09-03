@@ -33,7 +33,7 @@ const char* values [] = {
     "Everyday"
 };
 
-const size_t val_size = sizeof(values);
+const size_t val_size = sizeof(values) / sizeof(values[0]);
 
 char* strdup(const char* s)
 {
@@ -48,8 +48,9 @@ char* strdup(const char* s)
 
 void* clib_str_cpy(void* dest, const void* src, size_t n)
 {
-    char* temp = strdup((const char*) src);
-    memcpy(dest, &temp, n);
+    char** cast = (char**)src;
+    char* t = strdup(*cast);
+    memcpy(dest, &t, n);
     return dest;
 }
 
@@ -57,6 +58,7 @@ void clib_pointer_free(void* ptr)
 {
     char** fp = ptr;
     free(*fp);
+    free(ptr);
 }
 
 /* * Tests * */
@@ -78,8 +80,10 @@ void item_manipulations()
     }
     CU_ASSERT(stack_size(stack) == val_size);
     for (int i = (int)stack_size(stack) - 1; i >= 0; i--) {
-        char* strval = stack_head(stack);
-        CU_ASSERT(strcmp(strval, values[i]) == 0);
+        char** strval = stack_head(stack);
+        char* val = *strval;
+        CU_ASSERT(strcmp(val, values[i]) == 0);
+        stack_pop(stack);
     }
     stack_destroy(stack);
 }
