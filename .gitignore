@@ -35,3 +35,6 @@
 # build directories
 /Debug/*
 /Release/*
+
+# vim temporary files
+*.sw[op]
