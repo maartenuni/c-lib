@@ -25,13 +25,41 @@ extern "C"{
 #endif
 
 /**
- * A clib_free_func is used to deallocate memory.
+ * \brief A clib_free_func is used to deallocate memory.
  *
  * A clib_free_func is the counter part of an allocation func. Therefore,
  * if an element inside an container needs additional freeing
  */
 typedef void  (*clib_free_func)(void* element);
+
+/**
+ * \brief A clib_copy_func is used to copy a number of bytes from source to
+ * destination.
+ *
+ * Copy a number (n) of bytes from the source(src) location to a destination
+ * (dest) location. This function matches memcpy signature, so you can
+ * typically use memcpy/memmove where a copy function is expected. The return
+ * function is expected to return a pointer to the destination.
+ *
+ * @param[out]  dest    A pointer to the destination location.
+ * @param[in]   src     The location to copy from.
+ * @param[in]   n       The number of bytes to copy.
+ *
+ * @return      A pointer to the destination location.
+ */
 typedef void* (*clib_copy_func)(void* dest, const void* src, size_t n);
+
+/**
+ * \brief A signature for a function that compares two objects.
+ *
+ * A compare function that compares two elements. It should be compatible 
+ * for sorting algorithms for example, so make sure the elements have
+ * a total order, using the specified ordering function.
+ *
+ * \return The function should return an integer less then zero when element1
+ *         is smaller the element2. A value larger than zero when element 2
+ *         is larger and 0, when the two elements are equal.
+ */
 typedef int   (*clib_compare_func)(void* element1, void* element2);
 
 #ifdef __cplusplus

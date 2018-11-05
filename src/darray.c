@@ -21,14 +21,19 @@
 #include <string.h>
 #include <assert.h>
 
+/**
+ * \brief the private implementation of an array.
+ *
+ * \private
+ */
 struct DArray {
-    size_t  esize;   //< Element size;
-    size_t  size;    //< number of elements contained
-    size_t  cap;     //< capacity of the buffer (in number of elements).
-    char*   elems;   //< pointer to the elements.
+    size_t  esize;   ///< Element size;
+    size_t  size;    ///< number of elements contained
+    size_t  cap;     ///< capacity of the buffer (in number of elements).
+    char*   elems;   ///< pointer to the elements.
 
-    da_free_func ff; //< function called when erasing element from the array
-    da_copy_func cf; //< This function is called when a new member is inserted.
+    da_free_func ff; ///< function called when erasing element from the array
+    da_copy_func cf; ///< This function is called when a new member is inserted.
 };
 
 typedef struct DArray DArray;

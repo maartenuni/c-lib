@@ -38,3 +38,7 @@
 
 # vim temporary files
 *.sw[op]
+
+# doxygen related.
+/doc/
+DoxyWarnings.txt
